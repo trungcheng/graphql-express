@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import Promise from 'bluebird';
 import express from 'express';
-import graphql from 'express-graphql';
+import graphQLHTTP from 'express-graphql';
 import { MongoClient } from 'mongodb';
 import Html from './components/Html';
-import schema from './data/schema';
+import Schema from './data/schema';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,8 +21,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Register GraphQL middleware
 // https://github.com/graphql/express-graphql
-app.use('/graphql', graphql(req => ({
-    schema,
+app.use('/graphql', graphQLHTTP(req => ({
+    Schema,
     graphiql: true,
     rootValue: { db: req.app.locals.db }
 })));
