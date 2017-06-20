@@ -6,7 +6,7 @@ import graphQLHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
 import Html from './client/components/Html';
-// import Schema from './data/schema';
+import schema from './graphql';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,11 +23,11 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(webpackMiddleware(webpack(webpackConfig), { stats: webpackConfig.stats}));
 }
 
-// app.use('/graphql', graphQLHTTP(req => ({
-//     schema: Schema,
-//     graphiql: true,
-//     rootValue: { db: req.app.locals.db }
-// })));
+app.use('/graphql', graphQLHTTP(req => ({
+    schema,
+    graphiql: true,
+    pretty: true
+})));
 
 app.get('*', (req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(<Html />);

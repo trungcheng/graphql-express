@@ -3,7 +3,7 @@ import {
 	GraphQLNonNull
 } from 'graphql';
 
-import { userType } from '../../types';
+import { userType } from '../../types/user';
 import UserModel from '../../../http/models/user.model';
 
 export default {
