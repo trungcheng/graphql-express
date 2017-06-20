@@ -5,8 +5,6 @@ import {
     GraphQLList
 } from 'graphql';
 
-// A GraphQL schema
-// https://github.com/graphql/graphql-js
 const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: 'Query',

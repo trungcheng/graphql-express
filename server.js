@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom/server';
 import Promise from 'bluebird';
 import express from 'express';
 import graphQLHTTP from 'express-graphql';
-import { MongoClient } from 'mongodb';
-import Html from './components/Html';
-import Schema from './data/schema';
+import mongoose from 'mongoose';
+
+import Html from './client/components/Html';
+// import Schema from './data/schema';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Compiles client-side JavaScript code on the fly
-// https://github.com/webpack/webpack-dev-middleware
+mongoose.connect('mongodb://localhost:27017/graphql', (err) => {
+    if (err) throw err;
+    console.log('Connect to db successfully!');
+});
+
 if (process.env.NODE_ENV !== 'production') {
     const webpack = require('webpack');
     const webpackMiddleware = require('webpack-dev-middleware');
@@ -19,41 +23,17 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(webpackMiddleware(webpack(webpackConfig), { stats: webpackConfig.stats}));
 }
 
-// Register GraphQL middleware
-// https://github.com/graphql/express-graphql
-app.use('/graphql', graphQLHTTP(req => ({
-    Schema,
-    graphiql: true,
-    rootValue: { db: req.app.locals.db }
-})));
+// app.use('/graphql', graphQLHTTP(req => ({
+//     schema: Schema,
+//     graphiql: true,
+//     rootValue: { db: req.app.locals.db }
+// })));
 
-// Database access example
-app.get('/test', async (req, res, next) => {
-    try {
-        const db = req.app.locals.db;
-        await db.collection('log').insertOne({
-            time: new Date(),
-            ip: req.ip,
-            message: '/test visit'
-        });
-        res.send('<h1>Hello, world!</h1>');
-    } catch (err) {
-        next(err);
-    }
-});
-
-// Serve an empty HTML page for all requests (SPA)
 app.get('*', (req, res) => {
     const markup = ReactDOM.renderToStaticMarkup(<Html />);
     res.send(`<!doctype html>\n${markup}`);
 });
 
-// Create a MonboDB connection pool and start the Node.js app
-MongoClient.connect('mongodb://localhost:27017/demo', { promiseLibrary: Promise })
-    .catch(err => console.error(err.stack))
-    .then(db => {
-        app.locals.db = db; // See http://expressjs.com/en/4x/api.html#app.locals
-        app.listen(port, () => {
-            console.log(`Node.js app is listening at http://localhost:${port}/`);
-        });
-    });
+app.listen(port, () => {
+    console.log(`Express server is running at http://localhost:${port}`);
+});
