@@ -1,6 +1,6 @@
 import { GraphQLNonNull } from 'graphql';
 
-import { postType, postInputType } from '../../types/post';
+import { postType, postInputType } from '../../types/post.type';
 import PostModel from '../../../http/models/post.model';
 
 export default {

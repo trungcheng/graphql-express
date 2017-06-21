@@ -23,6 +23,9 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(webpackMiddleware(webpack(webpackConfig), { stats: webpackConfig.stats}));
 }
 
+app.use('/client', express.static('./client'));
+app.use('/graphql', express.static('./graphql'));
+
 app.use('/graphql', graphQLHTTP(req => ({
     schema,
     graphiql: true,

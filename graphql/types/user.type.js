@@ -34,7 +34,7 @@ export const userType = new GraphQLObjectType({
 	})
 });
 
-export const userInputType: new GraphQLInputObjectType({
+export const userInputType = new GraphQLInputObjectType({
 	name: 'UserInput',
 	description: 'Insert User',
 	fields: () => ({
